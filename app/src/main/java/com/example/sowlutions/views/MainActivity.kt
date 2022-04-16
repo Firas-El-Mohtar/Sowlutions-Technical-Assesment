@@ -36,39 +36,20 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener{
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        binding.progressBar.isVisible = true
         setupRecyclerView()
 
 
-//        lifecycleScope.launchWhenCreated {
-//            binding.progressBar.isVisible = true
-//            val response = try {
-//                RetrofitInstance.api.getProducts()
-//            } catch(e: IOException) {
-//                Log.e(TAG, "IOException, you might not have internet connection")
-//                binding.progressBar.isVisible = false
-//                return@launchWhenCreated
-//            } catch (e: HttpException) {
-//                Log.e(TAG, "HttpException, unexpected response")
-//                binding.progressBar.isVisible = false
-//                return@launchWhenCreated
-//            }
-//            if(response.isSuccessful && response.body() != null) {
-//                productAdapter.products = response.body()!!.data.products
-//            } else {
-//                Log.e(TAG, "Response not successful")
-//            }
-//            binding.progressBar.isVisible = false
-//        }
-        binding.progressBar.isVisible = true
-//        homeviewModel.getProductsWithKeyword("water")
+
         homeviewModel.getProducts()
         homeviewModel.myResponse.observe(this, Observer {
             if(homeviewModel.myResponse.value!!.body() != null) {
                 Log.e(TAG, "Response successful")
                 productAdapter.products = homeviewModel.myResponse.value!!.body()!!.data.products
+                binding.progressBar.isVisible = false
             }
         })
-        binding.progressBar.isVisible = false
+
 
 
         homeviewModel.selectedImage.observe(this@MainActivity, Observer {
@@ -109,7 +90,6 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener{
 
 
     override fun onQueryTextSubmit(query: String?): Boolean {
-        return true
         if(query != null){
             searchAPI(query)
         }
